@@ -1,5 +1,7 @@
 @extends('layouts.app')
+
 @section('title', 'Kasir')
+
 @section('content')
 <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
 
