@@ -20,19 +20,26 @@
         return this.cart.reduce((sum, item) => sum + item.price, 0);
     }
 }">
-    <div class="grid grid-cols-3 gap-4">
-        @foreach ($products as $product)
-            <div
-                class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
-                @click="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})"
-            >
-                <p class="font-medium">{{ $product->name }}</p>
-                <p class="text-sm text-slate-500">
-                    Rp {{ number_format($product->price) }}
-                </p>
-            </div>
-        @endforeach
-    </div>
+<div class="grid grid-cols-3 gap-4">
+    @foreach ($products as $product)
+        <div
+            class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+            @click="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})"
+        >
+            <p class="font-medium">{{ $product->name }}</p>
+
+            <p class="text-sm text-slate-500">
+                Rp {{ number_format($product->price) }}
+            </p>
+
+            @if ($product->stock < 10)
+                <span class="bg-amber-100 text-amber-700">
+                    Stok Menipis
+                </span>
+            @endif
+        </div>
+    @endforeach
+</div>
 
     <div class="mt-4 border-t pt-3">
         <h2 class="font-semibold mb-2">Keranjang Belanja</h2>
