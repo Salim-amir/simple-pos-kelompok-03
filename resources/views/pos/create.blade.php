@@ -53,7 +53,7 @@
                     @click="removeFromCart(item.id)"  
                     class="text-red-500 hover:text-red-700 font-bold px-2 py-1 text-sm rounded hover:bg-red-50 transition" 
                 > 
-                    ✕ 
+                    ✕ =
                 </button> 
             </div> 
         </template>
