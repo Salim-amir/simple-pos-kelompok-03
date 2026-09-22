@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
                     'category_id' => $categoryId, 
                     'name' => fake()->words(2, true), 
                     'price' => fake()->numberBetween(3000, 50000), 
-                    'stock' => fake()->numberBetween(0, 200), 
+                    'stock' => fake()->numberBetween(0, 200),
+                    'is_active' => fake()->boolean(90), 
                     'created_at' => now(), 
                     'updated_at' => now(), 
                 ]; 
