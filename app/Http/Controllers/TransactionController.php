@@ -8,7 +8,7 @@ class TransactionController extends Controller
 {
     public function create()
     {
-        $products = Product::where('stock', '>', 0)->get();
+        $products = Product::where('stock', '>', 0)->latest()->paginate(12);
         return view('pos.create', ['products' => $products]);
     }
 
@@ -19,7 +19,7 @@ class TransactionController extends Controller
 
     public function index()
     {
-    $transactions = Trabsaction::with('details.product')
+    $transactions = Transaction::with('details.product')
     ->latest()
     ->paginate(15);
      return view('transactions.index', compact('transactions'));
