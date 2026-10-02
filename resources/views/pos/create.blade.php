@@ -41,6 +41,9 @@
             @endif
         </div>
     @endforeach
+    <div class="justify-center col-span-3 flex mt-4">
+        {{ $products->links() }}
+    </div>
 </div>
 
         <div class="mt-4 border-t pt-3"> 
