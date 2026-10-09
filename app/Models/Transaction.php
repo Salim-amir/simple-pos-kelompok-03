@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
+    protected $fillable = ['user_id', 'total'];
+
     public function details(): HasMany
     {
         return $this->hasMany(TransactionDetail::class);
@@ -16,4 +18,5 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class);
     }
+
 }
