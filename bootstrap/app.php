@@ -9,6 +9,7 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(
     commands: __DIR__ . '/../routes/console.php',
     health: '/up',
 )->withMiddleware(function (Middleware $middleware): void {
+   $middleware->redirectUsersTo('/pos');
     $middleware->alias([
         'role' => \App\Http\Middleware\EnsureUserHasRole::class,
     ]);
