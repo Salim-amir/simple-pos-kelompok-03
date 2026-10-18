@@ -63,3 +63,42 @@ jawaban langkah 6 poin 5
 Jelaskan dengan kata-katamu sendiri (ditulis di README atau dokumen terpisah): kalau field total tetap dikirim dari form dan divalidasi dengan aturan numeric, apakah itu cukup mencegah manipulasi total? Kenapa atau kenapa tidak?
 
 Jika field `total` tetap dikirim dari form dan hanya divalidasi dengan aturan `numeric`, hal tersebut belum cukup untuk mencegah manipulasi total transaksi. Aturan `numeric` hanya memastikan bahwa nilai yang dikirim berupa angka, bukan memastikan bahwa jumlahnya benar. Misalnya, harga barang Rp10.000, tetapi pengguna mengubah nilai `total` menjadi Rp1.000 melalui browser sebelum mengirim form. Nilai tersebut tetap lolos validasi karena masih berupa angka. Oleh karena itu, total transaksi harus dihitung ulang di server berdasarkan harga produk yang tersimpan di database dikalikan dengan jumlah barang yang dibeli. Dengan begitu, server tidak bergantung pada nilai total dari pengguna sehingga risiko manipulasi dapat dicegah.
+
+
+Manual Testing
+Pengujian manual dilakukan untuk memastikan sistem berjalan sesuai dengan hak akses masing-masing pengguna.
+1. Guest (Tamu)
+Skenario: Menguji akses halaman informasi publik dan pembatasan akses halaman POS.
+Langkah Pengujian:
+1. Pastikan pengguna belum login atau hapus sesi login pada browser.
+2. Buka halaman /info.
+3. Coba akses halaman /pos secara langsung melalui address bar.
+Hasil yang Diharapkan:
+- Halaman /info berhasil ditampilkan dan menyediakan tombol menuju halaman login.
+- Pengguna yang belum login diarahkan ke halaman /login ketika mengakses /pos.
+2. Cashier (Kasir)
+Skenario: Menguji pembatasan akses halaman informasi dan proses transaksi kasir.
+Langkah Pengujian:
+1. Login menggunakan akun dengan role Cashier.
+2. Coba akses halaman /info.
+3. Buka halaman /pos.
+4. Pilih satu produk dan masukkan ke keranjang.
+5. Lakukan checkout untuk menyelesaikan transaksi.
+Hasil yang Diharapkan:
+- Pengguna diarahkan kembali ke halaman /pos ketika mengakses /info.
+- Transaksi berhasil diproses.
+- Sistem menampilkan struk atau notifikasi pembayaran berhasil.
+3. Administrator (Admin)
+Skenario: Menguji pengelolaan data produk dan integrasinya dengan halaman POS.
+Langkah Pengujian:
+1. Login menggunakan akun dengan role Admin.
+2. Buka menu Manajemen Produk.
+3. Tambahkan produk baru dengan mengisi nama, harga, dan stok.
+4. Simpan data produk.
+5. Buka halaman /pos.
+Hasil yang Diharapkan:
+- Data produk berhasil disimpan tanpa pesan error.
+- Produk baru muncul pada daftar produk di halaman /pos.
+- Produk baru dapat dipilih untuk transaksi.
+Kesimpulan
+Pengujian manual dilakukan untuk memastikan pembatasan akses berdasarkan role, proses transaksi kasir, dan pengelolaan data produk berjalan sesuai kebutuhan sistem.
