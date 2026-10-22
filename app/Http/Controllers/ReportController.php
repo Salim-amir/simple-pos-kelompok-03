@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessProductImport;
 use App\Exports\SalesReportExport;
 use App\Models\Product;
 use App\Models\Transaction;
@@ -84,6 +85,11 @@ class ReportController extends Controller
             'csv' => ['required', 'file', 'mimes:csv,txt'],
         ]);
 
+        $path = $request->file('csv')->store('imports');
+
+        ProcessProductImport::dispatch($path);
+
+        return back()->with('success', 'Import sedang diproses di background.');
         $lines = file($request->file('csv')->getRealPath(), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $rows = array_map('str_getcsv', $lines);
         $header = array_shift($rows);
