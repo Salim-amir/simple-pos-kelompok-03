@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessProductImport;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -34,6 +35,20 @@ class ReportController extends Controller
             fclose($out);
         }, 'laporan-penjualan.csv');
     }
+
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'csv' => ['required', 'file', 'mimes:csv,txt'],
+        ]);
+
+        $path = $request->file('csv')->store('imports');
+
+        ProcessProductImport::dispatch($path);
+
+        return back()->with('success', 'Import sedang diproses di background.');
+    }
+
     private function resolveDateRange(Request $request): array
     {
         $from = $request->date('from')?->startOfDay() ?? now()->startOfMonth();
