@@ -1,30 +1,28 @@
 @extends('layouts.app')
+
 @section('title', 'Laporan Penjualan')
 
 @section('content')
-<div class="container my-4">
-    <h2 class="mb-4">Laporan Penjualan</h2>
+<h1 class="text-lg font-semibold mb-4">Laporan Penjualan</h1>
 
-    <form action="{{ route('reports.index') }}" method="GET" class="row g-3 mb-4">
-        <div class="col-md-4">
-            <label for="start_date" class="form-label">Dari</label>
-            <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-        </div>
-        <div class="col-md-4">
-            <label for="end_date" class="form-label">Sampai</label>
-            <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-        </div>
-        <div class="col-md-4 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">Filter</button>
-        </div>
-    </form>
+<form method="GET" action="{{ route('reports.index') }}" class="flex gap-3 items-end mb-6">
+    <label class="block">
+        <span class="text-sm font-medium">Dari</span>
+        <input type="date" name="from" value="{{ $from }}" class="mt-1 block border rounded-md px-3 py-2 text-sm">
+    </label>
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Total Penjualan</h5>
-            <h3 class="card-text text-success">Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</h3>
-            <p class="card-text text-muted">{{ $jumlahTransaksi }} transaksi</p>
-        </div>
-    </div>
+    <label class="block">
+        <span class="text-sm font-medium">Sampai</span>
+        <input type="date" name="to" value="{{ $to }}" class="mt-1 block border rounded-md px-3 py-2 text-sm">
+    </label>
+
+    <button type="submit" class="bg-slate-900 text-white px-4 py-2 rounded-md text-sm">Filter</button>
+    <a href="{{ route('reports.export.csv', ['from' => $from, 'to' => $to]) }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">Export CSV</a>
+</form>
+
+<div class="bg-white border rounded-md p-4 max-w-sm">
+    <p class="text-sm text-slate-500">Total Penjualan</p>
+    <p class="text-2xl font-semibold">Rp {{ number_format($totalPenjualan) }}</p>
+    <p class="text-sm text-slate-500 mt-2">{{ $jumlahTransaksi }} transaksi</p>
 </div>
 @endsection
