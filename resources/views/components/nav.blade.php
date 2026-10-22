@@ -5,7 +5,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-header nav me-auto">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link text-white" href="{{ route('pos.create') }}">Kasir</a>
                 </li>
@@ -21,6 +21,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('reports.index') }}">Laporan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('import.create') }}">Import</a>
                     </li>
                 @endif
             </ul>
