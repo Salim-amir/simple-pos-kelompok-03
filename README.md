@@ -102,3 +102,16 @@ Hasil yang Diharapkan:
 - Produk baru dapat dipilih untuk transaksi.
 Kesimpulan
 Pengujian manual dilakukan untuk memastikan pembatasan akses berdasarkan role, proses transaksi kasir, dan pengelolaan data produk berjalan sesuai kebutuhan sistem.
+
+
+pertemuan 9 langkah 10 poin 5
+**Proses yang diusulkan:** 
+Men-generate laporan penjualan bulanan atau tahunan ke dalam format PDF (menggunakan DomPDF) atau Excel, terutama ketika rentang tanggal mencakup puluhan ribu transaksi.
+
+**Alasan pemindahan ke Queue:**
+1. **Mencegah Timeout dan Blokir UI (User Experience):** 
+   Proses render PDF atau Excel untuk dataset besar memakan waktu (CPU intensive). Jika dilakukan secara *synchronous* (langsung), browser pengguna akan *loading* terus-menerus dan seolah-olah aplikasi *hang*. Dengan *queue*, pengguna cukup menekan tombol "Export", lalu aplikasi segera merespons "Laporan sedang dibuat" sehingga kasir/admin bisa melanjutkan pekerjaan lain.
+2. **Keterbatasan Memori Server (Memory Limit):** 
+   Seperti yang disebutkan pada jobsheet langkah 6, DomPDF memuat seluruh HTML ke memori sekaligus sebelum merendernya. Jika dipaksa mengekspor 10.000 row secara langsung, server PHP kemungkinan akan mengalami *fatal error (memory size exhausted)*. Di dalam *queue*, kita bisa memprosesnya di *background worker* dengan batas waktu (timeout) dan pengaturan memori yang lebih longgar tanpa mengganggu web server utama.
+3. **Penyimpanan File Asynchronous:**
+   Dengan *queue*, hasil akhir PDF/Excel yang selesai dibuat dapat disimpan sementara di direktori `storage`. Setelah *job* selesai, sistem tinggal mengabari pengguna (misal lewat notifikasi sistem atau email) berisi tautan (*link*) untuk mengunduh laporan yang sudah jadi tersebut.
