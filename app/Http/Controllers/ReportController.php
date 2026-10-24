@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\SalesReportExport;
+use App\Imports\ProductsImport;
 use App\Jobs\ProcessProductImport;
 use App\Models\Category;
 use App\Models\ImportError;
@@ -102,6 +103,17 @@ class ReportController extends Controller
 
         return back()->with('success', 'Import sedang diproses di background.');
     }
+
+    public function importExcel(Request $request): RedirectResponse
+{
+    $request->validate([
+        'file' => ['required', 'file', 'mimes:csv,txt,xlsx'],
+    ]);
+
+    Excel::import(new ProductsImport, $request->file('file'));
+
+    return back()->with('success', 'Import selesai.');
+}
 
     public function clearImportErrors(): RedirectResponse
     {
