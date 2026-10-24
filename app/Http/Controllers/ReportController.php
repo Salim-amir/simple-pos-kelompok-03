@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\SalesReportExport;
 use App\Jobs\ProcessProductImport;
 use App\Models\Category;
+use App\Models\ImportError;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
@@ -82,7 +83,7 @@ class ReportController extends Controller
 
     public function importForm(): View
     {
-        $importErrors = \App\Models\ImportError::orderBy('row_number', 'asc')->get();
+        $importErrors = ImportError::orderBy('row_number', 'asc')->get();
 
         return view('reports.import', [
             'importErrors' => $importErrors,
@@ -104,7 +105,7 @@ class ReportController extends Controller
 
     public function clearImportErrors(): RedirectResponse
     {
-        \App\Models\ImportError::truncate();
+        ImportError::truncate();
 
         return back()->with('success', 'Riwayat error import berhasil dibersihkan.');
     }
