@@ -91,4 +91,23 @@
             </div>
         @endif
     </div>
+    <div style="margin-top:24px;border:1px solid #cbd5e1;border-radius:8px;padding:20px;max-width:576px;">
+    <h2 style="font-size:16px;font-weight:600;margin-bottom:12px;">Import dengan Laravel Excel (CSV atau XLSX)</h2>
+
+    <form method="POST" action="{{ route('import.excel') }}" enctype="multipart/form-data">
+        @csrf
+        <label style="display:block;margin-bottom:12px;">
+            <span style="display:block;font-size:14px;font-weight:500;margin-bottom:4px;">File CSV / XLSX</span>
+            <input type="file" name="file" accept=".csv,.xlsx"
+                   style="display:block;width:100%;border:1px solid #94a3b8;border-radius:6px;padding:8px;font-size:14px;">
+            @error('file')
+                <p style="color:#dc2626;font-size:14px;margin-top:4px;">{{ $message }}</p>
+            @enderror
+        </label>
+        <button type="submit"
+                style="background:#0f172a;color:#fff;padding:8px 16px;border-radius:6px;font-size:14px;border:0;cursor:pointer;">
+            Import (Laravel Excel)
+        </button>
+    </form>
+</div>
 @endsection
