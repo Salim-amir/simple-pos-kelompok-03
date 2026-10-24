@@ -82,7 +82,11 @@ class ReportController extends Controller
 
     public function importForm(): View
     {
-        return view('reports.import');
+        $importErrors = \App\Models\ImportError::orderBy('row_number', 'asc')->get();
+
+        return view('reports.import', [
+            'importErrors' => $importErrors,
+        ]);
     }
 
     public function import(Request $request): RedirectResponse
@@ -96,6 +100,13 @@ class ReportController extends Controller
         ProcessProductImport::dispatch($path);
 
         return back()->with('success', 'Import sedang diproses di background.');
+    }
+
+    public function clearImportErrors(): RedirectResponse
+    {
+        \App\Models\ImportError::truncate();
+
+        return back()->with('success', 'Riwayat error import berhasil dibersihkan.');
     }
 
     private function resolveDateRange(Request $request): array
