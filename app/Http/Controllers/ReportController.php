@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -71,10 +72,24 @@ class ReportController extends Controller
         [$from, $to] = $this->resolveDateRange($request);
         $categoryId = $request->input('category_id');
 
+        $topProducts = DB::table('transaction_details')
+            ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+            ->join('products', 'transaction_details.product_id', '=', 'products.id')
+            ->whereBetween('transactions.created_at', [$from, $to])
+            ->when($categoryId, function ($query, $categoryId) {
+                $query->where('products.category_id', $categoryId);
+            })
+            ->select('products.name', DB::raw('SUM(transaction_details.quantity) as total_qty'))
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_qty')
+            ->limit(5)
+            ->get();
+
         $pdf = Pdf::loadView('reports.pdf', [
             'totalPenjualan'  => $this->filteredQuery($from, $to, $categoryId)->sum('total'),
             'jumlahTransaksi' => $this->filteredQuery($from, $to, $categoryId)->count(),
             'transactions'    => $this->filteredQuery($from, $to, $categoryId)->latest()->limit(50)->get(),
+            'topProducts'     => $topProducts,
             'from'            => $from->toDateString(),
             'to'              => $to->toDateString(),
         ]);
@@ -105,15 +120,15 @@ class ReportController extends Controller
     }
 
     public function importExcel(Request $request): RedirectResponse
-{
-    $request->validate([
-        'file' => ['required', 'file', 'mimes:csv,txt,xlsx'],
-    ]);
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:csv,txt,xlsx'],
+        ]);
 
-    Excel::import(new ProductsImport, $request->file('file'));
+        Excel::import(new ProductsImport, $request->file('file'));
 
-    return back()->with('success', 'Import selesai.');
-}
+        return back()->with('success', 'Import selesai.');
+    }
 
     public function clearImportErrors(): RedirectResponse
     {
