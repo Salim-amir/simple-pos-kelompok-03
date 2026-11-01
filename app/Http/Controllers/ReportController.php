@@ -79,7 +79,7 @@ class ReportController extends Controller
             ->when($categoryId, function ($query, $categoryId) {
                 $query->where('products.category_id', $categoryId);
             })
-            ->select('products.name', DB::raw('SUM(transaction_details.quantity) as total_qty'))
+            ->select('products.name', DB::raw('SUM(transaction_details.qty) as total_qty'))
             ->groupBy('products.id', 'products.name')
             ->orderByDesc('total_qty')
             ->limit(5)
