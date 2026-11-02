@@ -36,9 +36,30 @@ paths:
       summary: Ambil daftar produk
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Halaman data yang dipanggil
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Jumlah produk per halaman
+          required: false
+          schema:
+            type: integer
+            default: 15
+        - name: sort
+          in: query
+          description: Urutkan berdasarkan kolom (misal name, price)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
-          description: Daftar produk
+          description: Daftar produk berpaginasi
           content:
             application/json:
               schema:
@@ -53,6 +74,36 @@ paths:
                         name: { type: string }
                         price: { type: integer }
                         category: { type: string }
+                  meta:
+                    type: object
+                    properties:
+                      current_page: { type: integer }
+                      per_page: { type: integer }
+                      total: { type: integer }
+        '401':
+          description: Token tidak ada atau tidak valid
+  /api/categories:
+    get:
+      summary: Ambil daftar kategori
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Daftar kategori produk
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+                        created_at: { type: string }
+                        updated_at: { type: string }
         '401':
           description: Token tidak ada atau tidak valid
   /api/transactions:
@@ -60,6 +111,13 @@ paths:
       summary: Buat transaksi baru
       security:
         - bearerAuth: []
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          description: Unique key untuk mencegah transaksi ganda
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
