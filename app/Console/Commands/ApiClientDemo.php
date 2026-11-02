@@ -29,13 +29,13 @@ class ApiClientDemo extends Command
      */
     public function handle(): int
     {
-        $baseUrl = 'http://127.0.0.1:8000';
+        $baseUrl = 'http://127.0.0.1:8000/api/v1';
 
         // Klien yang baik mengulang hanya error yang memang layak diulang, dengan jeda yang makin panjang
         $when = fn ($e) => $e instanceof ConnectionException || in_array($e->response?->status(), [429, 502, 503, 504]);
         $backoff = fn (int $attempt) => $attempt * 1000;
 
-        $login = Http::acceptJson()->post("{$baseUrl}/api/login", [
+        $login = Http::acceptJson()->post("{$baseUrl}/login", [
             'email' => 'kasir@pos.test',
             'password' => 'password',
         ]);
@@ -51,7 +51,7 @@ class ApiClientDemo extends Command
         $products = Http::acceptJson()
             ->withToken($token)
             ->retry(3, $backoff, $when, throw: false)
-            ->get("{$baseUrl}/api/products");
+            ->get("{$baseUrl}/products");
 
         if ($products->failed()) {
             $this->error('Token kedaluwarsa/dicabut, atau server sedang bermasalah.');
@@ -73,7 +73,7 @@ class ApiClientDemo extends Command
             ->withToken($token)
             ->withHeaders(['Idempotency-Key' => $key])
             ->retry(3, $backoff, $when, throw: false)
-            ->post("{$baseUrl}/api/transactions", $payload);
+            ->post("{$baseUrl}/transactions", $payload);
 
         match ($transaction->status()) {
             201 => $this->info('Transaksi tersimpan: ' . json_encode($transaction->json('data'))),
@@ -87,7 +87,7 @@ class ApiClientDemo extends Command
             ->withToken($token)
             ->withHeaders(['Idempotency-Key' => $key])
             ->retry(3, $backoff, $when, throw: false)
-            ->post("{$baseUrl}/api/transactions", $payload);
+            ->post("{$baseUrl}/transactions", $payload);
 
         $this->info('Ulang dengan key yang sama: ' . $retry->status() . ', replayed = ' . $retry->header('Idempotent-Replayed'));
 

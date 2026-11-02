@@ -3,7 +3,7 @@ info:
   title: Simple POS API
   version: 1.0.0
 paths:
-  /api/login:
+  /api/v1/login:
     post:
       summary: Login dan dapatkan token
       requestBody:
@@ -31,7 +31,7 @@ paths:
                 type: object
                 properties:
                   message: { type: string }
-  /api/products:
+  /api/v1/products:
     get:
       summary: Ambil daftar produk
       security:
@@ -82,7 +82,7 @@ paths:
                       total: { type: integer }
         '401':
           description: Token tidak ada atau tidak valid
-  /api/categories:
+  /api/v1/categories:
     get:
       summary: Ambil daftar kategori
       security:
@@ -106,7 +106,7 @@ paths:
                         updated_at: { type: string }
         '401':
           description: Token tidak ada atau tidak valid
-  /api/transactions:
+  /api/v1/transactions:
     post:
       summary: Buat transaksi baru
       security:
