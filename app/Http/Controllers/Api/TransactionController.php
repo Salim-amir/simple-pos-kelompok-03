@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTransactionRequest;
+use App\Http\Resources\TransactionResource;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class TransactionController extends Controller
 {
@@ -34,11 +36,18 @@ class TransactionController extends Controller
             $transaction->update(['total' => $total]);
             return $transaction;
         });
+
         return response()->json([
             'data' => [
                 'id' => $transaction->id,
                 'total' => $transaction->total,
             ],
         ], 201);
+    }
+
+    public function show(Transaction $transaction)
+    {
+        Gate::authorize('view', $transaction);
+        return new TransactionResource($transaction);
     }
 }
