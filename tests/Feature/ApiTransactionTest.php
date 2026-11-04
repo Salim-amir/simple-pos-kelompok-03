@@ -84,4 +84,18 @@ class ApiTransactionTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.id', $transaction->id);
     }
+
+    public function test_expired_token_returns_401(): void
+    {
+        $user = User::factory()->create();
+
+        $token = $user->createToken('test-token', ['products:read'], now()->addDay());
+
+        \Illuminate\Support\Carbon::setTestNow(now()->addDays(2));
+
+        $this->withToken($token->plainTextToken)
+            ->getJson('/api/products')
+            ->assertUnauthorized();
+        // 401
+    }
 }
